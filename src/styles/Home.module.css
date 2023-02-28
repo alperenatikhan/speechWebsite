@@ -250,6 +250,10 @@
   }
 }
 
+.main{
+  background-color: rgba(245, 245, 245, 1);
+}
+
 /* Tablet and Smaller Desktop */
 @media (min-width: 701px) and (max-width: 1120px) {
   .grid {

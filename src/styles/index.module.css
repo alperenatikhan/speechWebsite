@@ -1,0 +1,146 @@
+
+.header {
+  background-color: lightblue;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+/* Navbar */
+.navbar {
+  background-color: lightblue;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Search Box */
+.searchBox {
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px auto;
+}
+
+.searchResults{
+  margin-top: 10px;
+width:95vw;
+ max-width:700px;
+
+}
+
+/* Comment Box */
+.commentBox {
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px auto;
+}
+
+/* Button */
+.button {
+  background-color: lightblue;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.outerCard {
+  background-color: rgba(238, 240, 241,0.5);
+  border: 1px solid rgba(51, 51, 51, 0.3);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Text Card */
+.textCard {
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  margin: 10px;
+
+}
+
+/* Text Card Title */
+.textCardTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color:#333;
+}
+
+/* Text Card Button */
+.textCardButton {
+  background-color: dodgerblue;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.searchButton{
+  background-color: violet;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  margin:10px 0 10px 0;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  margin-right: 10px;
+
+
+}
+
+
+
+
+/* Media Query for Mobile Devices */
+@media only screen and (max-width: 600px) {
+  /* Header */
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Navbar */
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0;
+  }
+
+  /* Search Box */
+  .searchBox {
+    max-width: 100%;
+  }
+
+  /* Comment Box */
+  .commentBox {
+    max-width: 100%;
+  }
+}
