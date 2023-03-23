@@ -2,20 +2,7 @@
 //mongoose.connect('', {
 import mongoose from 'mongoose';
 import escapeStringRegexp from 'escape-string-regexp';
-
-
-
-
-
-
-  mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true }).then(()=>console.log("database connected"));
-  
-  const textSchema = new mongoose.Schema({
-    filename: String,
-    pagecontent: String,
-  });
-  
-  const Text = mongoose.model('speechtexts', textSchema);
+import {Text} from '../../../models/Text.js' 
   
   async function searchKeyword(keyword) {
 
@@ -52,6 +39,12 @@ const regex = new RegExp(`${keyword}`, 'gi');
   
       return {
         filename: text.filename,
+        slug:text.slug,
+        source: text.source,
+        pagetitle:text.pagetitle,
+        year:text.year,
+        sortableDate: text.sortableDate,
+        rawDateObject: text.rawDateObject,
         contexts: contextArray,
       };
     });

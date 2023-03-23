@@ -3,8 +3,11 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import indexStyles from '@/styles/index.module.css'
-import {useState,useEffect} from 'react'
+import {useState,useEffect,useMemo} from 'react'
 import ResultCard from '../components/resultCard'
+import Link from 'next/link'
+
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -13,18 +16,93 @@ export default function Home() {
 const [searchKeyword, setSearchKeyword] = useState('')
 const [dummyData, setDummyData] = useState([])
 const [loading,setLoading] = useState(false)
+const [sortData, setSortData] = useState({time:null, relevance:null})
+const [timeSortType, setTimeSortType] = useState("↑")
+const [relevanceSortType, setRelevanceSortType] = useState("↑")
+const [sortingActive,setSortingActive] = useState(false)
+let [textCount, setTextCount] = useState(false)
+let [pageCount, setPageCount] = useState(false)
+let [paginationArray, setPaginationArray]=useState([])
+let [currentPage, setCurrentPage] = useState(1)
+
+const fillPageArray =async(pageNumber) => {
+let pageArray = [];
+
+for (let num = 1; num <= pageNumber; num++ ){
+  pageArray.push(num)
+}
+
+await setPaginationArray(pageArray)
+
+}
+
+const sortedData = useMemo(() => {
+
+  if (dummyData){
+  let sorted = [...dummyData];
+  
+
+
+  if (sortData.time === '↑') {
+    sorted = sorted.sort((a, b) => a.sortableDate - b.sortableDate);
+  } else if (sortData.time === '↓') {
+    sorted = sorted.sort((a, b) => b.sortableDate - a.sortableDate);
+  }
+
+  if (sortData.relevance === '↑') {
+    sorted = sorted.sort((a, b) => {
+      if (a.contexts.length === b.contexts.length) {
+        return 0;
+      } else {
+        return b.contexts.length -a.contexts.length;
+      }
+    });
+  } else if (sortData.relevance === '↓') {
+    sorted = sorted.sort((a, b) => {
+      if (a.contexts.length === b.contexts.length) {
+        return 0;
+      } else {
+        return a.contexts.length- b.contexts.length;
+      }
+    });
+  }
+
+  return sorted;
+
+}
+}, [dummyData, sortData]);
+
+
 
 
 const searchHandler = async()=> {
 
+  setSortingActive(false)
+  setSortData({time:null, relevance:null});
+  if (searchKeyword.length > 2 ){
   setLoading(true)
   const res = await fetch(`/api/search?q=${searchKeyword}`);
-  const data = await res.json().then(data=> data.results);
-  await setDummyData(data)
+  const sitedata = await res.json().then(data=> data.results);
+  await setDummyData(sitedata)
+  await setTextCount(sitedata?.length)
+  await setPageCount(Math.ceil(sitedata?.length/10))
+  await fillPageArray(Math.ceil(sitedata?.length/10))
   setLoading(false)
 
+  }
 
 }
+
+const sortHandler = (sortObj) => {
+  setSortingActive(true);
+  setSortData((prevSortData) => {
+    const newSortData = { ...prevSortData };
+    for (const [key, value] of Object.entries(sortObj)) {
+      newSortData[key] = value;
+    }
+    return newSortData;
+  });
+};
 
   return (
     <>
@@ -48,23 +126,62 @@ const searchHandler = async()=> {
           placeholder='Please enter the text you want to search' 
           value={searchKeyword}
           onChange={(el)=> setSearchKeyword(el.target.value)}
-          style={{"height":"3em", 'width': '60vw'}}/>
+          style={{"height":"3em", 'width': '60vw'}}
+          required = {true}
+          />
 
           <p> Search Keyword: {searchKeyword} </p>
+
+          {!loading && <p> {textCount} results in {pageCount} pages</p>}
+        
+
+          <div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between" }}>
           <input 
           type='submit'
           onClick={searchHandler}
           className={indexStyles.searchButton}
           />
 
+
+          </div>
+
           </form>  
        <>
+      <div style={{display:'flex', flexDirection:'row', flexWrap:'wrap'}}>{!loading && paginationArray?.map((num) => (
+  <a style={{marginLeft:"0.3em",padding:'2px',backgroundColor:num === currentPage ?'azure' : 'white', border: "1px solid lightgray"}} key={num} onClick={()=> setCurrentPage(num)}> 
+    {num === currentPage ? <strong>{num}</strong> : num}
+  </a>
+))} </div>
+  
        {loading && <h3> Loading </h3>}
+       { (!loading && dummyData?.length >1) && <div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-evenly" }}> 
+       <div style={{ margin:'0 0.5em'}}><h4> Sort by </h4> </div>
+       <button style={{backgroundColor:'teal'}} className={indexStyles.searchButton} 
+       onClick={()=>{setTimeSortType(timeSortType =='↑' ? '↓' : '↑');sortHandler({"time" : timeSortType})  }}> Time {timeSortType}</button> 
+       
+       
+       <button style={{backgroundColor:'teal'}} className={indexStyles.searchButton} onClick={()=>{ setRelevanceSortType(relevanceSortType =='↑' ? '↓' : '↑');sortHandler({"relevance" : relevanceSortType})  }} > Relevance {relevanceSortType} </button> 
+       
+       <button onClick={() => {setSortData({time:null, relevance:null}); setTimeSortType('↑'); setRelevanceSortType('↑'); setSortingActive(false)  }  }>Reset </button> </div> }
 
 <div className={indexStyles.searchResults}>
-      {!loading && dummyData.map( (data,index) =><div key={index} className={indexStyles.outerCard}> <h3 className={inter.className}> {data.filename} </h3> 
+      {(!loading && sortingActive ) ? sortedData?.slice((currentPage-1)*10,currentPage*10).map( (data,index) =><div key={index} className={indexStyles.outerCard}> <Link href={`/speeches/${data.slug}`}> <h3 className={inter.className}> {data.pagetitle} </h3> </Link>
+     <div className={indexStyles.referenceSection}>
+      <h5 className= {inter.className}> Source: {data.source} </h5>
+      <h5 className= {inter.className}> Date: {data.rawDateObject} </h5>
+      </div>
+       {data.contexts.map((item,index) => <ResultCard key={index} item={item} source={data.source} />)} 
+    
+      </div>)
+
+
       
-       {data.contexts.map((item,index) => <ResultCard key={index} item={item} />)} 
+      : !loading && dummyData?.slice((currentPage-1)*10,currentPage*10).map( (data,index) =><div key={index} className={indexStyles.outerCard}><Link href={`/speeches/${data.slug}`}> <h3 className={inter.className}> {data.pagetitle} </h3> </Link>
+     <div className={indexStyles.referenceSection}>
+      <h5 className= {inter.className}> Source: {data.source} </h5>
+      <h5 className= {inter.className}> Date: {data.rawDateObject} </h5>
+      </div>
+       {data.contexts.map((item,index) => <ResultCard key={index} item={item} source={data.source} />)} 
     
       </div>)}
       </div> 

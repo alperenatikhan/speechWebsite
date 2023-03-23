@@ -38,6 +38,13 @@ width:95vw;
 
 }
 
+.referenceSection{
+
+  margin: 1em 0.5em;
+  line-height:1.1em;
+
+}
+
 /* Comment Box */
 .commentBox {
   background-color: white;
