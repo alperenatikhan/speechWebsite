@@ -25,7 +25,7 @@ export default function Speeches({data}){
 export async function getServerSideProps({params}) {
  
   const { slug } = params
-  const data = await axios.get(`http://localhost:3000/api/speeches/${slug}`).then(data=> data.data)
+  const data = await axios.get(`https://speech-website.vercel.app/speeches/${slug}`).then(data=> data.data)
   
 
   // Pass data to the page via props
