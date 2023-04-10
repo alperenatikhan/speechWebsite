@@ -5,8 +5,8 @@ import styles from '@/styles/Home.module.css'
 import indexStyles from '@/styles/index.module.css'
 import {useState,useEffect,useMemo} from 'react'
 import ResultCard from '../components/resultCard'
+import FavoritesCard from '../components/favoritesCard'
 import Link from 'next/link'
-
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -24,6 +24,9 @@ let [textCount, setTextCount] = useState(false)
 let [pageCount, setPageCount] = useState(false)
 let [paginationArray, setPaginationArray]=useState([])
 let [currentPage, setCurrentPage] = useState(1)
+let [displayFavorites, setDisplayFavorites]= useState(false)
+let [favoritesPage, setFavoritesPage] = useState([])
+
 
 const fillPageArray =async(pageNumber) => {
 let pageArray = [];
@@ -77,6 +80,8 @@ const sortedData = useMemo(() => {
 
 const searchHandler = async()=> {
 
+  displayFavorites != false && setDisplayFavorites(false)
+  currentPage != 1 && setCurrentPage(1)
   setSortingActive(false)
   setSortData({time:null, relevance:null});
   if (searchKeyword.length > 2 ){
@@ -104,6 +109,22 @@ const sortHandler = (sortObj) => {
   });
 };
 
+const favoritesDisplayHandler = async() => {
+displayFavorites !=true && setDisplayFavorites(true)
+setLoading(true);
+const favorRes = await fetch(`/api/allcomments`)
+let favoritesdata = await favorRes.json()
+favoritesdata = favoritesdata.reverse()
+console.log(favoritesdata)
+await setFavoritesPage(favoritesdata)
+await setDummyData([])
+await setSortData({})
+await setSortingActive(false)
+await setPaginationArray([])
+
+setLoading(false)
+}
+
   return (
     <>
       <Head>
@@ -118,6 +139,8 @@ const sortHandler = (sortObj) => {
             Website helps you finding the forgotten texts 
             
           </p>
+
+          <button className={indexStyles.searchButton} style={{backgroundColor: 'lightgreen'}} onClick = {() => favoritesDisplayHandler()} > See Favorites </button>
         </div>
 
    
@@ -142,10 +165,12 @@ const sortHandler = (sortObj) => {
           className={indexStyles.searchButton}
           />
 
-
           </div>
 
-          </form>  
+          </form> 
+
+         
+ 
        <>
       <div style={{display:'flex', flexDirection:'row', flexWrap:'wrap'}}>{!loading && paginationArray?.map((num) => (
   <a style={{marginLeft:"0.3em",padding:'2px',backgroundColor:num === currentPage ?'azure' : 'white', border: "1px solid lightgray"}} key={num} onClick={()=> setCurrentPage(num)}> 
@@ -154,7 +179,16 @@ const sortHandler = (sortObj) => {
 ))} </div>
   
        {loading && <h3> Loading </h3>}
-       { (!loading && dummyData?.length >1) && <div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-evenly" }}> 
+
+     
+
+
+
+       { 
+       
+       (displayFavorites) ? <> {favoritesPage?.map((item, index) => <FavoritesCard key ={index} data ={item}/>)}  </>
+       
+       :( (!loading && dummyData?.length >1) && (displayFavorites==false && favoritesPage.length >0 )) && <div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-evenly" }}> 
        <div style={{ margin:'0 0.5em'}}><h4> Sort by </h4> </div>
        <button style={{backgroundColor:'teal'}} className={indexStyles.searchButton} 
        onClick={()=>{setTimeSortType(timeSortType =='↑' ? '↓' : '↑');sortHandler({"time" : timeSortType})  }}> Time {timeSortType}</button> 
@@ -170,7 +204,7 @@ const sortHandler = (sortObj) => {
       <h5 className= {inter.className}> Source: {data.source} </h5>
       <h5 className= {inter.className}> Date: {data.rawDateObject} </h5>
       </div>
-       {data.contexts.map((item,index) => <ResultCard key={index} item={item} source={data.source} />)} 
+       {data.contexts.map((item,index) => <ResultCard key={index} item={item} source={data.source} data={data} searchKeyword ={searchKeyword} />)} 
     
       </div>)
 
@@ -181,7 +215,7 @@ const sortHandler = (sortObj) => {
       <h5 className= {inter.className}> Source: {data.source} </h5>
       <h5 className= {inter.className}> Date: {data.rawDateObject} </h5>
       </div>
-       {data.contexts.map((item,index) => <ResultCard key={index} item={item} source={data.source} />)} 
+       {data.contexts.map((item,index) => <ResultCard key={index} item={item} source={data.source} data ={data} searchKeyword ={searchKeyword}  />)} 
     
       </div>)}
       </div> 
