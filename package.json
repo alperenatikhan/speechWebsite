@@ -21,7 +21,6 @@
     "mongodb": "^5.1.0",
     "mongoose": "^6.10.0",
     "next": "13.2.1",
-    "next-auth": "^4.19.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "turkish-deasciifier": "^1.0.0"
