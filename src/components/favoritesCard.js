@@ -41,7 +41,7 @@ return (
 
 
 {data?.comments.map(comment => 
-    <div className={indexStyles.textCard} style={{width:"%98", padding:'1.2em'}}> 
+    <div className={indexStyles.textCard} style={{width:"95%", padding:'1.2em'}}> 
 
 {comment.commentText.length > 0 ? 
 (<>
