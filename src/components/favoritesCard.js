@@ -41,7 +41,7 @@ return (
 
 
 {data?.comments.map(comment => 
-    <div className={indexStyles.textCard} > 
+    <div className={indexStyles.textCard} style={{width:"%98", padding:'1.2em'}}> 
 
 {comment.commentText.length > 0 ? 
 (<>
@@ -85,7 +85,10 @@ return (
 <p style={{fontStyle: "italic"}}> Excerpt: {comment.excerptText} </p>
 <>
 <a href= {data.slug}><p>{data.pagetitle}</p> </a>
-   <p>Source: {comment.source}</p>
+   <p style={{ 
+  overflow: "hidden",
+  textOverflow: "ellipsis"
+}}>Source: {comment.source}</p>
    </>
     
 
