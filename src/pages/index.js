@@ -183,10 +183,10 @@ setLoading(false)
      
 
 
-
+<div style={{display:'grid', placeItems:'center'}}>
        { 
+       (displayFavorites) ? <> {favoritesPage?.map((item, index) => <FavoritesCard key ={index} data ={item}/>)}</>  
        
-       (displayFavorites) ? <> {favoritesPage?.map((item, index) => <FavoritesCard key ={index} data ={item}/>)}  </>
        
        :( (!loading && dummyData?.length >1) && (displayFavorites==false && favoritesPage.length >0 )) && <div style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-evenly" }}> 
        <div style={{ margin:'0 0.5em'}}><h4> Sort by </h4> </div>
@@ -196,7 +196,12 @@ setLoading(false)
        
        <button style={{backgroundColor:'teal'}} className={indexStyles.searchButton} onClick={()=>{ setRelevanceSortType(relevanceSortType =='↑' ? '↓' : '↑');sortHandler({"relevance" : relevanceSortType})  }} > Relevance {relevanceSortType} </button> 
        
-       <button onClick={() => {setSortData({time:null, relevance:null}); setTimeSortType('↑'); setRelevanceSortType('↑'); setSortingActive(false)  }  }>Reset </button> </div> }
+       <button onClick={() => {setSortData({time:null, relevance:null}); setTimeSortType('↑'); setRelevanceSortType('↑'); setSortingActive(false)  }  }>Reset </button> </div> 
+       
+      
+       }
+
+       </div>
 
 <div className={indexStyles.searchResults}>
       {(!loading && sortingActive ) ? sortedData?.slice((currentPage-1)*10,currentPage*10).map( (data,index) =><div key={index} className={indexStyles.outerCard}> <Link href={`/speeches/${data.slug}`}> <h3 className={inter.className}> {data.pagetitle} </h3> </Link>

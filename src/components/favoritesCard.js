@@ -31,12 +31,17 @@ return (
 
 
 <> 
-<div className={indexStyles.outerCard} style={{maxWidth:'700px', minWidth:'250px', width:'90vw' }}>
+<div className={indexStyles.outerCard} style={{
+          maxWidth: '700px',
+          minWidth: '250px',
+          width: '95vw',
+          margin: '0 auto',
+        }}>
 <h3 className={inter.className}> {data.searchKeyword} </h3> 
 
 
 {data?.comments.map(comment => 
-    <div className={indexStyles.textCard} style={{"padding":"1em", "margin": "0.5em", 'display':'grid', 'placeItems':'center'}}> 
+    <div className={indexStyles.textCard} > 
 
 {comment.commentText.length > 0 ? 
 (<>
